@@ -1,0 +1,15 @@
+<%- include("partials/header")-%>
+
+  <h1 class="homeTitle">Share with the world</h1>
+  
+  <div class="globalPosts">
+    <% listPosts.forEach(function(post) { %>
+      <h3 class="GlobalpostsTitle"><%= post.title %></h3>
+      <p class="GlobalpostsContent"><%= post.content.substring(0,100) %>...</p>
+      <a href='/posts/<%= post.title %>'>Read more</a>
+      <p class="globalTime"><%= post.date %></p>
+    <% }); %>
+  </div>
+  
+  
+<%- include("partials/footer")-%>

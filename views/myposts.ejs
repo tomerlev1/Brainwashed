@@ -1,0 +1,30 @@
+<%- include("partials/header") -%>
+
+  <h1 class="MypostsTitle">My Posts</h1>
+
+  <form class="newCompose" action="/compose" method="post">
+    <div class="container right">
+      <button type="submit" class="btn btn-circle btn-xl">+</button>
+    </div>
+  </form>
+
+  <div class="postWindows">
+    <div class="row g-5 py-2 row-cols-6">
+      <% listPosts.forEach(function(post) { %>
+        <div class="box show-modal">
+          <h3 class="boxTitle"><%= post.title %></h3>
+          <p class="boxContent"><%= post.content %></p>
+          <time class="boxDate"><%= post.date %></time>
+        </div>
+      <% }); %>
+        <div class="openWindow hidden">
+          <button class="close-modal">&times;</button>
+            <h4 class="windowTitle"></h4>
+            <p class="windowConent"></p>
+        </div>
+        <div class="overlay hidden"></div>
+    </div>
+  </div>
+
+
+<%- include("partials/myfooter") -%>
