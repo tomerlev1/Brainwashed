@@ -153,6 +153,11 @@ h1 {
     margin-top: 5px;
 }
 
+#private, #announcement {
+    margin-bottom: 1.1em;
+    margin-left: 0.1em;
+}
+
 /* ///////////////////////// */
 
 /* Signin & Signup Modal */
@@ -182,12 +187,12 @@ h1 {
     font-family: sans-serif;
     color: #333;
     overflow-x: hidden;
+    padding-left: 0.60em;
     /* line-height: 1.5;
     height: 100vh; */
     /* position: flex;
     display: relative; */
-    align-items: flex-start;
-    /* justify-content: center; */
+    
       
 }
 
@@ -198,15 +203,15 @@ h1 {
   }
   
 .openWindow {
-    margin: 0;
-    color: white;
+    margin-top: 2em;
+    color: rgb(0, 0, 0);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     min-height: 80%;
     width: 50%;
-    background: linear-gradient(#1c1b1b, #373b3b);
+    background: linear-gradient(#e0b35f, #FFFDD0);
     opacity: 0.9;
     padding: 3rem;
     border-radius: 5px;
@@ -220,7 +225,7 @@ h1 {
   
 .overlay {
     position: absolute;
-    top: 0;
+    top: 0.6rem;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -231,8 +236,9 @@ h1 {
   }
 
 .close-modal {
-    color: white;
+    color: rgb(0, 0, 0);
     position: absolute;
+    opacity: 0.7;
     top: 0rem;
     right: 2rem;
     font-size: 3rem;
@@ -252,7 +258,7 @@ h1 {
     background-color: #FFFDD0;
     color: rgb(31, 30, 30);
     cursor: pointer;
-    height: 30vh;
+    height: 35vh;
     width: 14em;
 }
 

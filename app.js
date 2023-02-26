@@ -4,54 +4,85 @@ import express from "express";
 import bodyParser from "body-parser";
 import path from "path";
 import _ from "lodash";
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import * as mongoose from 'mongoose';
+import session from "express-session";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { User, Post } from "./javascript/schemas.js";
+// import { hashPassword, comparePassword } from "./javascript/bcrypt.js";
 
 
 const app = express();
 const server = http.createServer(app);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Mongodb connection
-mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://127.0.0.1:27017/blogDB', {useNewUrlParser: true});
-
-const usersSchema = new mongoose.Schema({
-  _id: Number,
-  emailAdress: String,
-  userPassword: String,
-  userPosts: [{
-    postTitle: String,
-    postAuthor: String,
-    postContent: String,
-  }]
-});
-
-// const po
-
 
 // Global variables
-const posts = [];
+
+const users = {};
 
 // Global contents
 const aboutPContent = "Hey !<br> My name as you can see at the footer of the page is Tomer Levin and I'm a programmer.<br> I create this blog for you to could be saved your daily story (as well to be able follow on your progress in your life tasks).<br> I hope you'll enjoy my website that I've worked on it in my free time. 🍊🍊";
-const contactPContent = "Hello friends!<br> I'm glad you came to contact me.<br> I am available and attentive to any request or question you may have.<br> Please contact me in one of the following ways.";
+const contactPContent = "Welcome to my website!<br> I'm glad you came to contact me.<br> I am available and attentive to any request or question you may have.<br> Please contact me in one of the following ways.";
 
 
 app.set('view engine', 'ejs');
+
+app.use(
+  session({
+      name: 'SESSION_ID',      // cookie name stored in the web browser
+      secret: '3 brothers',     // helps to protect session
+      cookie: {
+          maxAge: 30 * 86400000, // 30 * (24 * 60 * 60 * 1000) = 30 * 86400000 => session is stored 30 days
+      }
+  })
+);
+
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.static(path.join(__dirname, "/javascript")));
 
 
-app.get("/", function(req, res) {
-  res.render("home", {listPosts: posts});
+
+
+
+app.get("/", async function(req, res) {
+
+  try 
+  {
+    const globalPosts = await Post.findGlobals().then((docs) => {return docs}).catch((err) => {return err});
+    
+    // const postAhutor =  await User.findById(await globalPosts.userId, function (err, docs) {
+    //   if (err){
+    //       console.log(err);
+    //   }
+    //   else{
+    //       return(docs);
+    //   }
+    // });
+    // console.log(postAhutor);
+    // postAuthor: postAhutor.fullName
+    // console.log(globalPosts);
+    res.render("home", {listPosts: globalPosts});
+  } 
+  catch(e) 
+  {
+    console.log(e);
+  }
 });
 
-app.get("/myposts", function(req, res) {
-  res.render("myposts", {listPosts: posts});
+app.get("/myposts", async function(req, res) {
+  const userId = req.session.userId;
+  try 
+  {
+    const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
+    res.render("myposts", {listPosts: userPosts});
+  } 
+  catch(e) 
+  {
+    console.log(e);
+  }
 });
 
 app.get("/about", function(req, res) {
@@ -74,17 +105,62 @@ app.get("/signin", function(req, res) {
   res.render("signin");
 });
 
+// Open the full post in his specific url
+app.get("/posts/:postName", async function(req, res) {
+  console.log(req.params.postName)
+  const requestedPost = await Post.findPostByTitle(req.params.postName).then((docs) => {return docs}).catch((err) => {return err});
 
-app.post("/publish", function(req, res) {
-  const date = new Date();
-  var current_time = date.getDate()+"/"+(date.getMonth()+1)+"/"+ date.getFullYear() +', '+ date.getHours()+ ":" + date.getMinutes()+":"+ date.getSeconds();
+  if (requestedPost) {
+      res.render("post", {title: requestedPost.title, content: requestedPost.content, date: requestedPost.createdAt});
+    };
+});
 
-  const post = {
+app.get("/userprofile/:userid", async function(req, res) {
+  const requestedUser = req.params.userid;
+
+  const cuurentUser = await User.findById(requestedUser, function (err, docs) {
+    if (err){
+        console.log(err);
+    }
+    else{
+        return docs;
+    }
+  });
+
+  res.render("userProfile", {fullName: cuurentUser.fullName});
+
+});
+
+app.get('/signout', function (req, res) {
+  if (req.session.userId) {
+      delete req.session.userId;
+      res.redirect('/signin');
+  } else {
+      res.json({result: 'ERROR', message: 'User is not sign in.'});
+  }
+});
+
+//PUBLISH A NEW POST 
+app.post("/publish", async function(req, res) {
+
+  const userPost = {
+    userId: req.session.userId,
     title: req.body.composeTitle,
     content: req.body.composeBody,
-    date: current_time,
+    category: req.body.category[0],
+  };
+
+  console.log(userPost);
+
+  if (userPost.userId) {
+    try {
+      await Post.insertPost(userPost).then((docs) => {return docs}).catch((err) => {return err})
+    } catch(e) {
+      console.log(e);
+    };
+  } else {
+    console.log('You are not loged in !')
   }
-  posts.push(post);
 
   res.redirect("/myposts");
 });
@@ -93,16 +169,53 @@ app.post("/compose", function(req, res) {
   res.redirect("compose");
 });
 
-app.get("/posts/:postName", function(req, res) {
-  const requestedTitle = _.lowerCase(req.params.postName);
+// Signup new user
+app.post("/signup", async function(req, res) {
 
-  posts.forEach(function(post) {
-    const storedTitle = _.lowerCase(post.title);
+  // Finding if email exist in users DB
+  const foundEmail = await User.findByEmail(req.body.signupEmail).then((docs) => {return docs}).catch((err) => {return err});
+  console.log(foundEmail);
 
-    if (storedTitle === requestedTitle) {
-      res.render("post", {title: post.title, content: post.content, date: post.date});
+  // Checking if email already exist
+  if (String(foundEmail) === String([])) {
+    try {
+    await User.insertUser(req.body.fullName, req.body.signupEmail, req.body.password).then((docs) => console.log('Insertion was succeed')).catch((err) => console.log('Error while trying to insert new user'));
+
+    users[req.body.signupEmail] = req.body.password;
+    console.log(users);
+    res.redirect("/signin");
+    } catch(e) {
+      console.log(e);
     };
-  });
+  } else {
+    console.log("Email is already exists");
+    res.redirect("/signup");
+  };
+});
+
+// Sign in to an existing user
+app.post('/signin', async function(req, res) {
+  if (req.session.userId) {
+      res.json({result: 'ERROR', message: 'User already logged in.'});
+  } else {
+      try {
+          const foundUser = await User.findByEmail(req.body.signinEmail).then((docs) => {return docs}).catch((err) => {return err});
+
+          if (foundUser.length > 0) {
+              const currentUser = foundUser[0];
+
+              req.session.userId = currentUser._id;
+
+              console.log('User login operation success.');
+          } else {
+              res.json({result: 'ERROR', message: 'Indicated username or/and password are not correct.'});
+          };
+      } catch(e) {
+          console.error(e);
+          res.json({result: 'ERROR', message: 'Request operation error.'});
+      };
+  res.redirect('/myposts');
+  };
 });
 
 
@@ -114,9 +227,12 @@ app.get("/posts/:postName", function(req, res) {
 
 
 
-
-server.listen(3000, function() {
-  console.log('server runs on port 3000');
+server.listen(3000, function(err) {
+  if(err) {
+    console.log(err);
+  } else {
+    console.log('server runs on port 3000');
+  }
 });
 
 

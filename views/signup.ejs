@@ -9,17 +9,21 @@
       </div>
 
       <div class="modal-body p-5 pt-0">
-        <form class="">
+        <form class="signUp" action="/signup" method="post">
           <div class="form-floating mb-3">
-            <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com" required>
+            <input type="fname" class="form-control rounded-3" id="floatingInput" placeholder="Full name" name="fullName" required>
+            <label for="floatingInput">Full name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com" name="signupEmail" required>
             <label for="floatingInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password" required>
+            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password" name="password" required>
             <label for="floatingPassword">Password</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Confirm password" required>
+            <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Confirm password" name="cPassword" required>
             <label for="floatingPassword">Confirm password</label>
           </div>
           <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>

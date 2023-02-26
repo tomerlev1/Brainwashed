@@ -9,12 +9,12 @@
   </form>
 
   <div class="postWindows">
-    <div class="row g-5 py-2 row-cols-6">
+    <div class="row g-1 py-2 row-cols-6">
       <% listPosts.forEach(function(post) { %>
         <div class="box show-modal">
           <h3 class="boxTitle"><%= post.title %></h3>
           <p class="boxContent"><%= post.content %></p>
-          <time class="boxDate"><%= post.date %></time>
+          <time class="boxDate"><%= String(post.createdAt).substring(0,24) %></time>
         </div>
       <% }); %>
         <div class="openWindow hidden">
