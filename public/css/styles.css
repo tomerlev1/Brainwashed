@@ -2,10 +2,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
 }
 
 body {
-    background-image: url('/images/freshOrange.jpg');
+
+    background-image: url('/images/lineAbstract.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -17,25 +19,22 @@ body {
 }
 
 h1 {
-    margin-bottom: 20px;
+    color : white;
+    margin-bottom: 10px;
     opacity: 0.9;
     font-family: 'Outfit', sans-serif;
     font-weight: 600; 
     padding-top: 1em;
-    padding-bottom: 1em;
+    padding-bottom: 0.8em;
 }
 
 
-/* Global posts Styles */
-/* .globalPosts {
-    overflow: auto;
-    display: inline;
-} */
+.globalPosts {
+    color: white;
+}
 
 .GlobalpostsContent {
-    font-size: 1.2rem;
     text-align: left;
-    width: 50%;
     margin-bottom: 0;
 }
 
@@ -45,7 +44,7 @@ h1 {
 }
 
 .post {
-    margin-bottom: 1rem;
+    color: white;
 }
 
 .postTitle {
@@ -55,13 +54,9 @@ h1 {
 
 .postContent {
     width: 70%;
-    font-size: 1.18rem;
+    font-size: 1.1rem;
 }
 
-.nav-link {
-    padding-left: 2em;
-    padding-right: 2em;
-}
 
 /* Contact & About///////////////////////// */
 .homeTitle, .MypostsTitle {
@@ -75,14 +70,15 @@ h1 {
 }
 
 .contacts, .aboutus {
-    font-weight: bold;
+    color: white;
+    font-weight: lighter;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .aboutContent, .contactContent {
-    font-size: 1.18rem;
+    font-weight: lighter;
 }
 
 
@@ -101,9 +97,25 @@ h1 {
 
 
 /* Nav Bar style */
+.nav-link {
+    font-weight: lighter;
+    color: white;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin: 0, 0, 0, 0;
+    margin-left: 3em;
+}
+
+.d-flex {
+    margin-left: 4em;
+}
 
 .navbar {
-    background-color: #FFFDD0 !important;
+    /* background: rgb(135,16,160);
+    background: linear-gradient(62deg, rgba(135,16,160,0.9024859943977591) 8%, rgba(245,19,50,0.9024859943977591) 51%, rgba(170,73,1,0.9220938375350141) 92%);
+    opacity: 0.9; */
+    background: rgb(215, 156, 227);
+    background: linear-gradient(62deg, rgba(45, 42, 77, 0.902) 8%, rgba(112, 206, 209, 0.902) 51%, rgba(193, 97, 66, 0.922) 92%);
     opacity: 0.9;
 }
 
@@ -118,7 +130,7 @@ h1 {
 }
 
 .navbar-nav  li a:hover {
-    color: orange !important;
+    color: #060606 !important;
 }
 
 .container-fluid {
@@ -136,12 +148,13 @@ h1 {
 .footer p {
 	margin-top: 25px;
 	font-size: 14px;
-    color: rgb(0, 0, 0);
+    color: white;
 }
 
 /* Compose///////////////////////// */
 
 #composeTitle, #composeBody{
+    color: rgb(0, 0, 0);
     width: 50%;
     padding: 3px 8px;
     font-size: 15px;
@@ -149,8 +162,9 @@ h1 {
     border-width: thin;
 }
 
-#p {
+#p, #t, #gl, #pr {
     margin-top: 5px;
+    color: white;
 }
 
 #private, #announcement {
@@ -179,6 +193,11 @@ h1 {
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 }
+
+.fw-bold {
+    color: black;
+}
+
 /* -------------------------- */
 
 /* Windows div modal */
@@ -308,14 +327,13 @@ h1 {
 
 /* Add post btn///////////////////////// */
 .btn-circle.btn-xl {
-    background-color:#ffffff79;
+    background-color:white;
     color: black;
     width: 45px;
     height: 45px;
     margin: 0 auto;
     padding: 0;
     border-radius: 10px;
-    border-width: 2.5px;
     border-color: #070707ab;
     font-size: 35px;
     line-height: 0px;
@@ -331,4 +349,26 @@ h1 {
     border-color: #0a0a0a;
     color: white;
     box-shadow: inset 200px 0 0 0 #0e0f0f;
+}
+
+/* sreach bar and btn */
+
+#searchBtn {
+    background-color: white;
+    color:black;
+    border-color:black;
+    box-shadow: inset 0 0 0 0 rgb(83, 82, 82);
+    transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
+}
+
+#searchBtn:hover {
+    color: white;
+    background-color: rgb(1, 1, 1);
+    box-shadow: inset 200px 0 0 0 #0e0f0f;
+}
+
+.d-flex {
+    width: 30%;
+    margin-left: 0;
+    margin-bottom: 1.2em;
 }

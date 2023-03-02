@@ -8,7 +8,7 @@ import session from "express-session";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { User, Post } from "./javascript/schemas.js";
-// import { hashPassword, comparePassword } from "./javascript/bcrypt.js";
+import {comparePassword } from "./javascript/bcrypt.js";
 
 
 const app = express();
@@ -21,7 +21,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const users = {};
 
 // Global contents
-const aboutPContent = "Hey !<br> My name as you can see at the footer of the page is Tomer Levin and I'm a programmer.<br> I create this blog for you to could be saved your daily story (as well to be able follow on your progress in your life tasks).<br> I hope you'll enjoy my website that I've worked on it in my free time. 🍊🍊";
+const aboutPContent = "Hey !<br> My name as you can see at the footer of the page is Tomer Levin and I'm a programmer.<br> I create this blog for people who want to share their stories or daily adventures with the world.<br> as well you can save your stories private for your own uses.<br> I hope you'll enjoy my website that I've worked on in my free time. 🧠🧠";
 const contactPContent = "Welcome to my website!<br> I'm glad you came to contact me.<br> I am available and attentive to any request or question you may have.<br> Please contact me in one of the following ways.";
 
 
@@ -106,9 +106,9 @@ app.get("/signin", function(req, res) {
 });
 
 // Open the full post in his specific url
-app.get("/posts/:postName", async function(req, res) {
-  console.log(req.params.postName)
-  const requestedPost = await Post.findPostByTitle(req.params.postName).then((docs) => {return docs}).catch((err) => {return err});
+app.get("/posts/:postId", async function(req, res) {
+
+  const requestedPost = await Post.findPostById(req.params.postId).then((docs) => {return docs[0]}).catch((err) => {return err});
 
   if (requestedPost) {
       res.render("post", {title: requestedPost.title, content: requestedPost.content, date: requestedPost.createdAt});
@@ -150,7 +150,6 @@ app.post("/publish", async function(req, res) {
     category: req.body.category[0],
   };
 
-  console.log(userPost);
 
   if (userPost.userId) {
     try {
@@ -167,6 +166,18 @@ app.post("/publish", async function(req, res) {
 
 app.post("/compose", function(req, res) {
   res.redirect("compose");
+});
+
+app.post("/search", async function(req, res) {
+  try {
+    const requestedTitle = await Post.findPostByTitle(req.body.postTitle).then((docs) => {return docs}).catch((err) => {return err});
+
+    if (requestedTitle.length >= 1) {
+        res.render("home", {listPosts: requestedTitle});
+      };
+  } catch(e) {
+    console.log(e);
+  }
 });
 
 // Signup new user
@@ -195,18 +206,24 @@ app.post("/signup", async function(req, res) {
 
 // Sign in to an existing user
 app.post('/signin', async function(req, res) {
+
   if (req.session.userId) {
       res.json({result: 'ERROR', message: 'User already logged in.'});
   } else {
       try {
+          const userPassword = req.body.password;
           const foundUser = await User.findByEmail(req.body.signinEmail).then((docs) => {return docs}).catch((err) => {return err});
+
 
           if (foundUser.length > 0) {
               const currentUser = foundUser[0];
 
-              req.session.userId = currentUser._id;
+              const passwordsMatching = await comparePassword(userPassword, currentUser.userPassword).then((docs) => {return docs}).catch((err) => {return err});
+              if (passwordsMatching) {
+                  req.session.userId = currentUser._id;
 
-              console.log('User login operation success.');
+                  console.log('User login operation success.');
+              };
           } else {
               res.json({result: 'ERROR', message: 'Indicated username or/and password are not correct.'});
           };

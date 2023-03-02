@@ -1,12 +1,18 @@
 <%- include("partials/header")-%>
 
-  <h1 class="homeTitle">Share with the world</h1>
+  <h1 class="homeTitle">Sharing is caring</h1>
+  
+  <form class="d-flex searchPost" role="search" action="/search" method="post">
+    <input class="form-control me-2" type="search" placeholder="Search Post By Title" aria-label="Search" name="postTitle">
+    <button class="btn btn-outline-success" id="searchBtn" type="submit">Search</button>
+  </form>
+
   
   <div class="globalPosts">
     <% listPosts.forEach(function(post) { %>
-      <h3 class="GlobalpostsTitle"><%= post.title %></h3>
+      <h4 class="GlobalpostsTitle"><%= post.title %></h4>
       <p class="GlobalpostsContent"><%= post.content.substring(0,100) %>...</p>
-      <a href='/posts/<%= post.title %>'>Read more</a>
+      <a href='/posts/<%= post.id %>'>Read more</a>
       <p class="globalTime"><%= String(post.createdAt).substring(0,24) %></p>
     <% }); %>
   </div>

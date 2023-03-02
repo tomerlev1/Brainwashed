@@ -135,7 +135,6 @@ PostSchema.static("findUserPosts",async function(id) {
   const query = await this.find({userId: {$eq: id}});
   query instanceof this.Query;
   const posts = await query;
-  console.log(posts)
 
   return posts;
 });
@@ -154,8 +153,17 @@ PostSchema.static("findPostByTitle", async function(title) {
   const query = await this.find({title: {$eq: title}, category: {$eq: 'global'}});
   query instanceof this.Query;
   const postFound = await query;
+  console.log(postFound);
+  return postFound;
+});
 
-  return postFound[0];
+PostSchema.static("findPostById", async function(id) {
+
+  const query = await this.find({_id: {$eq: id}, category: {$eq: 'global'}});
+  query instanceof this.Query;
+  const postFound = await query;
+  console.log(postFound);
+  return postFound;
 });
 
 // userSchema.static("deletePostByTitle",async function(userId, title) {

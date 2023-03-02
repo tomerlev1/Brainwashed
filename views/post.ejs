@@ -3,7 +3,7 @@
   <div class="post">
     <h1 class="postTitle"><%= title %></h1>
     <p class="postContent"><%= content %></p>
-    <time class="postDate"><%= date %></time>
+    <time class="postDate"><%= String(date).substring(0,24) %></time>
   </div>
   <a href='/'>Go back</a>
   
