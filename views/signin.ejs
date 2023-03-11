@@ -9,32 +9,20 @@
       </div>
 
       <div class="modal-body p-5 pt-0">
-        <form class="signIn" action="/signin" method="post">
+        <form class="signInform" action="/signin" method="post">
           <div class="form-floating mb-3">
-            <input type="email" class="form-control rounded-3" id="floatingInput" name="signinEmail" placeholder="name@example.com" required>
+            <input type="email" class="form-control rounded-3" id="floatingInput" name="signinEmail" oninput="this.value = this.value.replace(/[^A-Za-z0-9@.]/, '')" placeholder="name@example.com" required>
             <label for="floatingInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
-            <input type="password" class="form-control rounded-3" id="floatingPassword" name="password" placeholder="Password" required>
+            <input type="password" class="form-control rounded-3" id="floatingPassword" name="password" oninput="this.value = this.value.replace(/[^A-Za-z0-9/]/, '')" placeholder="Password" required>
             <label for="floatingPassword">Password</label>
           </div>
-          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign in</button>
+          <message class="errorSignIn hidden" id="error"> <%= message %> </message>
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" id="signinBtn" type="submit">Sign in</button>
           <small class="text-muted">By clicking Sign in, you agree to the terms of use.</small><br>
           <small class="text-muted">Or click here to <a href="signup">SignUp</a> .</small>
           <hr class="my-4">
-          <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-          <button class="w-100 py-2 mb-2 btn btn-outline-dark rounded-3" type="submit">
-            <svg class="bi me-1" width="16" height="16"><use xlink:href="#twitter"/></svg>
-            Sign in with Twitter
-          </button>
-          <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit">
-            <svg class="bi me-1" width="16" height="16"><use xlink:href="#facebook"/></svg>
-            Sign in with Facebook
-          </button>
-          <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
-            <svg class="bi me-1" width="16" height="16"><use xlink:href="#github"/></svg>
-            Sign in with GitHub
-          </button>
         </form>
       </div>
     </div>

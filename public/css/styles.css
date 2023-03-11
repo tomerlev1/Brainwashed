@@ -6,10 +6,8 @@
 }
 
 body {
-
-    background-image: url('/images/lineAbstract.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
+    background: rgb(244,241,241);
+    background: linear-gradient(18deg, rgba(244,241,241,0.9697128851540616) 16%, rgba(208,255,255,1) 30%, rgba(130,200,200,0.8184523809523809) 42%, rgba(109,182,182,1) 48%, rgba(159,250,250,1) 57%, rgba(93,217,217,1) 77%, rgba(244,241,241,0.9697128851540616) 88%);
     background-size: cover;
     min-height: 100vh;
     display: flex;
@@ -19,37 +17,56 @@ body {
 }
 
 h1 {
-    color : white;
-    margin-bottom: 10px;
+    color : rgb(30, 31, 30);
     opacity: 0.9;
     font-family: 'Outfit', sans-serif;
     font-weight: 600; 
-    padding-top: 1em;
-    padding-bottom: 0.8em;
+    margin-top: 1em;
+    margin-bottom: 0.8em;
 }
 
 
 .globalPosts {
-    color: white;
+    color: black;
+    margin-top: 2em;
+}
+
+
+.GlobalpostsTitle {
+    float: left;
+    display: inline;
+    margin-right: 5em;
+}
+
+.GlobalpostsTitle::first-letter {
+    text-transform: capitalize;
 }
 
 .GlobalpostsContent {
     text-align: left;
-    margin-bottom: 0;
+    margin-bottom: 1em;
+}
+
+.readmore {
+    float: left;
 }
 
 .globalTime {
     text-align: right;
-    width: 50%;
+    width: 100%;
 }
 
 .post {
-    color: white;
+    color: black;
+    margin-bottom: 1em;
+    white-space: pre-wrap;
+
 }
 
 .postTitle {
     text-align: left;
     margin-bottom: 0;
+    margin-top: 0;
 }
 
 .postContent {
@@ -57,9 +74,24 @@ h1 {
     font-size: 1.1rem;
 }
 
+.ahutorName {
+    color: black;
+    text-decoration: none;
+    float: right;
+    width: 70%;
+}
+
+.homeTitle {
+    display: inline;
+}
+
+.topHome {
+    margin-top: 1em;
+}
 
 /* Contact & About///////////////////////// */
-.homeTitle, .MypostsTitle {
+
+.MypostsTitle {
     text-align: left;
 }
 
@@ -70,7 +102,7 @@ h1 {
 }
 
 .contacts, .aboutus {
-    color: white;
+    color: black;
     font-weight: lighter;
     display: flex;
     justify-content: center;
@@ -97,6 +129,7 @@ h1 {
 
 
 /* Nav Bar style */
+
 .nav-link {
     font-weight: lighter;
     color: white;
@@ -104,18 +137,13 @@ h1 {
     padding-right: 2em;
     margin: 0, 0, 0, 0;
     margin-left: 3em;
+    cursor: pointer;
 }
 
-.d-flex {
-    margin-left: 4em;
-}
 
 .navbar {
-    /* background: rgb(135,16,160);
-    background: linear-gradient(62deg, rgba(135,16,160,0.9024859943977591) 8%, rgba(245,19,50,0.9024859943977591) 51%, rgba(170,73,1,0.9220938375350141) 92%);
-    opacity: 0.9; */
-    background: rgb(215, 156, 227);
-    background: linear-gradient(62deg, rgba(45, 42, 77, 0.902) 8%, rgba(112, 206, 209, 0.902) 51%, rgba(193, 97, 66, 0.922) 92%);
+    background: rgb(244,241,241);
+    background: linear-gradient(18deg, rgba(244,241,241,0.9697128851540616) 16%, rgba(103,129,129,1) 30%, rgba(40,45,45,0.8184523809523809) 42%, rgb(80, 110, 110) 48%, rgba(25,41,41,1) 57%, rgb(50, 83, 83) 77%, rgba(95, 95, 95, 0.97) 88%);
     opacity: 0.9;
 }
 
@@ -130,7 +158,7 @@ h1 {
 }
 
 .navbar-nav  li a:hover {
-    color: #060606 !important;
+    color: rgb(51, 189, 224) !important;
 }
 
 .container-fluid {
@@ -148,7 +176,7 @@ h1 {
 .footer p {
 	margin-top: 25px;
 	font-size: 14px;
-    color: white;
+    color: black;
 }
 
 /* Compose///////////////////////// */
@@ -164,7 +192,7 @@ h1 {
 
 #p, #t, #gl, #pr {
     margin-top: 5px;
-    color: white;
+    color: black;
 }
 
 #private, #announcement {
@@ -198,6 +226,33 @@ h1 {
     color: black;
 }
 
+#signinBtn {
+    margin-top: 1em;
+}
+
+#signUpBtn {
+    margin-top: 1em;
+}
+
+.logged {
+    text-decoration: underline;
+    color: white;
+}
+
+.loggedin {
+    margin-left: 1.6em;
+    margin-top: 0.7em;
+}
+
+#error {
+    color: red;
+    font-family: New Century Schoolbook, serif;
+    font-style: oblique;
+    text-decoration: underline;
+    font-weight: bolder;
+}
+
+
 /* -------------------------- */
 
 /* Windows div modal */
@@ -207,11 +262,6 @@ h1 {
     color: #333;
     overflow-x: hidden;
     padding-left: 0.60em;
-    /* line-height: 1.5;
-    height: 100vh; */
-    /* position: flex;
-    display: relative; */
-    
       
 }
 
@@ -228,9 +278,9 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-height: 80%;
+    min-height: 50vh;
     width: 50%;
-    background: linear-gradient(#e0b35f, #FFFDD0);
+    background: linear-gradient(#5fcde0, #faf9e9);
     opacity: 0.9;
     padding: 3rem;
     border-radius: 5px;
@@ -244,11 +294,10 @@ h1 {
   
 .overlay {
     position: absolute;
-    top: 0.6rem;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     background-color: rgba(84, 81, 81, 0.6);
     backdrop-filter: blur(3px);
     z-index: 5;
@@ -274,7 +323,7 @@ h1 {
     opacity: 0.98;
     overflow: hidden;
     margin: 2rem 1.5rem 0 0;
-    background-color: #FFFDD0;
+    background-color: #d8d3d3;
     color: rgb(31, 30, 30);
     cursor: pointer;
     height: 35vh;
@@ -286,18 +335,12 @@ h1 {
 }
 
 .boxTitle {
-    padding-top: 0.5em;
+    margin-top: 2.4em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
     text-align: center;
 }
 
-.boxContent {
-    padding-left: 0.8em;
-    height: 57%;
-    text-align: left;
-    overflow: hidden;
-    white-space: pre-line;
-    text-overflow: ellipsis;
-}
 
 .boxDate {
     font-size: 0.90rem;
@@ -305,39 +348,42 @@ h1 {
 }
 
 /* -------------------------- */
+
 /* Compose btn///////////////////////// */
 
-.btn-light {
-    padding: 3px 10px;
-    font-size: 15px;
-    border-radius: 5px;
-    border-width: 1px;
-    border-color: #070707ab;
-}
-
-.btn {
+.composeBtn {
+    height: 36px;
+    width: 80px;
+    border-radius: 1em;
+    border-width: 0.1em;
+    border-color: white;
+    color: white;
+    background-color: black;
     box-shadow: inset 0 0 0 0 rgb(83, 82, 82);
     transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
 }
 
-.btn:hover {
-    color: white;
-    box-shadow: inset 200px 0 0 0 #0e0f0f;
+.composeBtn:hover {
+    color: black;
+    border-color: black;
+    background-color: rgb(255, 255, 255);
+    box-shadow: inset 200px 0 0 0 #f7f7f7;
 }
 
 /* Add post btn///////////////////////// */
 .btn-circle.btn-xl {
-    background-color:white;
-    color: black;
-    width: 45px;
-    height: 45px;
+    background-color:  rgb(54, 50, 50);
+    color: white;
+    width: 55px;
+    height: 55px;
     margin: 0 auto;
     padding: 0;
-    border-radius: 10px;
-    border-color: #070707ab;
+    border-radius: 1em;
+    border-width: 0.07em;
+    border-color: white;
     font-size: 35px;
     line-height: 0px;
-    box-shadow: inset 0 0 0 0 rgb(189, 187, 187);
+    box-shadow: inset 0 0 0 0 rgb(83, 82, 82);
     transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
 }
 
@@ -347,28 +393,44 @@ h1 {
 
 .btn-circle.btn-xl:hover {
     border-color: #0a0a0a;
-    color: white;
-    box-shadow: inset 200px 0 0 0 #0e0f0f;
+    color: black;
+    background-color: rgb(255, 255, 255);
+    box-shadow: inset 200px 0 0 0 #f1f1ed;
 }
 
 /* sreach bar and btn */
 
 #searchBtn {
-    background-color: white;
-    color:black;
-    border-color:black;
+    background-color: rgb(54, 50, 50);
+    border-radius: 1em;
+    border-width: 0.1em;
+    color:white;
+    border-color: white;
     box-shadow: inset 0 0 0 0 rgb(83, 82, 82);
     transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
 }
 
 #searchBtn:hover {
-    color: white;
-    background-color: rgb(1, 1, 1);
-    box-shadow: inset 200px 0 0 0 #0e0f0f;
+    color: black;
+    border-color: black;
+    background-color: rgb(117, 115, 115);
+    box-shadow: inset 200px 0 0 0 #f1f1ed;
 }
 
-.d-flex {
+.searchPost {
     width: 30%;
-    margin-left: 0;
-    margin-bottom: 1.2em;
+    float: right;
+}
+
+.errorSearch {
+    font-size: 1.2em;
+    float: right;
+    margin-right: 11em;
+}
+
+.inputBox {
+    background-color: rgb(255, 255, 255);
+    border-radius: 1em;
+    border-width: 0.1em;
+    border-color: black;
 }

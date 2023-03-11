@@ -11,6 +11,7 @@ import { User, Post } from "./javascript/schemas.js";
 import {comparePassword } from "./javascript/bcrypt.js";
 
 
+
 const app = express();
 const server = http.createServer(app);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -18,12 +19,50 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Global variables
 
-const users = {};
 
 // Global contents
-const aboutPContent = "Hey !<br> My name as you can see at the footer of the page is Tomer Levin and I'm a programmer.<br> I create this blog for people who want to share their stories or daily adventures with the world.<br> as well you can save your stories private for your own uses.<br> I hope you'll enjoy my website that I've worked on in my free time. 🧠🧠";
+const aboutPContent = "Hey !<br> My name as you can see at the footer of the page is Tomer Levin and I'm a developer.<br> I create this blog for people who want to share their stories or daily adventures with the world.<br> as well you can save your stories private for your own uses.<br> I hope you'll enjoy my website that I've worked on in my free time. 🧠🧠";
 const contactPContent = "Welcome to my website!<br> I'm glad you came to contact me.<br> I am available and attentive to any request or question you may have.<br> Please contact me in one of the following ways.";
 
+
+// Function to make "home rendering" nice looking
+async function homeRender(res, req, error = null) {
+  try 
+  {
+    const globalPosts = await Post.findGlobals().then((docs) => {return docs}).catch((err) => {return err});
+
+    const globalAhutors = []
+    for (let i = 0; i < globalPosts.length; i++) {
+      let postAhutor =  await User.findById(globalPosts[i].userId, function (err, docs) {
+        if (err){
+            console.log(err);
+        }
+        else{
+            return(docs);
+        }
+      });
+      globalAhutors.push(postAhutor[0].fullName)
+    };
+
+    res.render("home", {message: error, listPosts: globalPosts, listAhutors: globalAhutors, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+  } 
+  catch(e) 
+  {
+    console.log(e);
+  };
+};
+
+async function currentUser(req) {
+  const curUser = await User.findById(req.session.userId, function (err, docs) {
+    if (err){
+        console.log(err);
+    }
+    else{
+        return docs;
+    }
+  });
+  return curUser[0]
+};
 
 app.set('view engine', 'ejs');
 
@@ -31,6 +70,8 @@ app.use(
   session({
       name: 'SESSION_ID',      // cookie name stored in the web browser
       secret: '3 brothers',     // helps to protect session
+      resave: true,
+      saveUninitialized: true,
       cookie: {
           maxAge: 30 * 86400000, // 30 * (24 * 60 * 60 * 1000) = 30 * 86400000 => session is stored 30 days
       }
@@ -48,28 +89,7 @@ app.use(express.static(path.join(__dirname, "/javascript")));
 
 
 app.get("/", async function(req, res) {
-
-  try 
-  {
-    const globalPosts = await Post.findGlobals().then((docs) => {return docs}).catch((err) => {return err});
-    
-    // const postAhutor =  await User.findById(await globalPosts.userId, function (err, docs) {
-    //   if (err){
-    //       console.log(err);
-    //   }
-    //   else{
-    //       return(docs);
-    //   }
-    // });
-    // console.log(postAhutor);
-    // postAuthor: postAhutor.fullName
-    // console.log(globalPosts);
-    res.render("home", {listPosts: globalPosts});
-  } 
-  catch(e) 
-  {
-    console.log(e);
-  }
+  homeRender(res, req);
 });
 
 app.get("/myposts", async function(req, res) {
@@ -77,7 +97,7 @@ app.get("/myposts", async function(req, res) {
   try 
   {
     const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
-    res.render("myposts", {listPosts: userPosts});
+    res.render("myposts", {listPosts: userPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
   } 
   catch(e) 
   {
@@ -85,24 +105,24 @@ app.get("/myposts", async function(req, res) {
   }
 });
 
-app.get("/about", function(req, res) {
-  res.render("about", {aboutContent: aboutPContent});
+app.get("/about", async function(req, res) {
+  res.render("about", {aboutContent: aboutPContent, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
-app.get("/contact", function(req, res) {
-  res.render("contact", {contactContent: contactPContent});
+app.get("/contact", async function(req, res) {
+  res.render("contact", {contactContent: contactPContent, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
-app.get("/compose", function(req, res) {
-  res.render("compose");
+app.get("/compose", async function(req, res) {
+  res.render("compose", {message: null, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
-app.get("/signup", function(req, res) {
-  res.render("signup");
+app.get("/signup", async function(req, res) {
+  res.render("signup", {message: null, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
-app.get("/signin", function(req, res) {
-  res.render("signin");
+app.get("/signin", async function(req, res) {
+  res.render("signin", {message: null, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
 // Open the full post in his specific url
@@ -111,41 +131,46 @@ app.get("/posts/:postId", async function(req, res) {
   const requestedPost = await Post.findPostById(req.params.postId).then((docs) => {return docs[0]}).catch((err) => {return err});
 
   if (requestedPost) {
-      res.render("post", {title: requestedPost.title, content: requestedPost.content, date: requestedPost.createdAt});
+      res.render("post", {title: requestedPost.title, content: requestedPost.content, date: requestedPost.createdAt, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
     };
 });
 
-app.get("/userprofile/:userid", async function(req, res) {
-  const requestedUser = req.params.userid;
+// Decided not to use this code ! ////////////////////////
+// app.get("/userprofile/:userid", async function(req, res) {
+//   const requestedUser = req.params.userid;
 
-  const cuurentUser = await User.findById(requestedUser, function (err, docs) {
-    if (err){
-        console.log(err);
-    }
-    else{
-        return docs;
-    }
-  });
+//   const cuurentUser = await User.findById(requestedUser, function (err, docs) {
+//     if (err){
+//         console.log(err);
+//     }
+//     else{
+//         return docs;
+//     }
+//   });
 
-  res.render("userProfile", {fullName: cuurentUser.fullName});
+//   res.render("userProfile", {fullName: cuurentUser.fullName, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 
-});
+// });
 
-app.get('/signout', function (req, res) {
+app.get('/logout', function (req, res) {
   if (req.session.userId) {
       delete req.session.userId;
-      res.redirect('/signin');
+      res.redirect('/');
   } else {
       res.json({result: 'ERROR', message: 'User is not sign in.'});
   }
 });
+
+app.get('*', (req, res) => {
+  res.redirect('/')
+})
 
 //PUBLISH A NEW POST 
 app.post("/publish", async function(req, res) {
 
   const userPost = {
     userId: req.session.userId,
-    title: req.body.composeTitle,
+    title: req.body.composeTitle.toLowerCase(),
     content: req.body.composeBody,
     category: req.body.category[0],
   };
@@ -158,8 +183,8 @@ app.post("/publish", async function(req, res) {
       console.log(e);
     };
   } else {
-    console.log('You are not loged in !')
-  }
+    res.render('compose', {message: '**User must log in to post**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+  };
 
   res.redirect("/myposts");
 });
@@ -170,13 +195,28 @@ app.post("/compose", function(req, res) {
 
 app.post("/search", async function(req, res) {
   try {
-    const requestedTitle = await Post.findPostByTitle(req.body.postTitle).then((docs) => {return docs}).catch((err) => {return err});
+      const requestedTitle = await Post.findPostByTitle(req.body.postTitle).then((docs) => {return docs}).catch((err) => {return err});
 
-    if (requestedTitle.length >= 1) {
-        res.render("home", {listPosts: requestedTitle});
+      const searchAhutors = []
+      for (let i = 0; i < requestedTitle.length; i++) {
+        let postAhutor =  await User.findById(requestedTitle[i].userId, function (err, docs) {
+          if (err){
+              console.log(err);
+          }
+          else{
+              return(docs);
+          }
+        });
+        console.log(postAhutor);
+        searchAhutors.push(postAhutor[0].fullName);
       };
+      if (requestedTitle.length >= 1) {
+          res.render("home", {message: null, listPosts: requestedTitle, listAhutors: searchAhutors, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+      } else {
+        throw Error;
+      }
   } catch(e) {
-    console.log(e);
+    homeRender(res, req, '**Incorrect title**');
   }
 });
 
@@ -186,21 +226,18 @@ app.post("/signup", async function(req, res) {
   // Finding if email exist in users DB
   const foundEmail = await User.findByEmail(req.body.signupEmail).then((docs) => {return docs}).catch((err) => {return err});
   console.log(foundEmail);
-
   // Checking if email already exist
   if (String(foundEmail) === String([])) {
     try {
-    await User.insertUser(req.body.fullName, req.body.signupEmail, req.body.password).then((docs) => console.log('Insertion was succeed')).catch((err) => console.log('Error while trying to insert new user'));
+      const message = await User.insertUser(req.body.fullName, req.body.signupEmail, req.body.password).then((docs) => {return docs;}).catch((err) => console.log(err));
+      console.log(message);
 
-    users[req.body.signupEmail] = req.body.password;
-    console.log(users);
-    res.redirect("/signin");
+      res.render("signup", {message: `** ${message}**`, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
     } catch(e) {
-      console.log(e);
+      res.render("signup", {message: e, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
     };
   } else {
-    console.log("Email is already exists");
-    res.redirect("/signup");
+    res.render("signup", {message: '**Email address already exist.**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
   };
 });
 
@@ -208,30 +245,32 @@ app.post("/signup", async function(req, res) {
 app.post('/signin', async function(req, res) {
 
   if (req.session.userId) {
-      res.json({result: 'ERROR', message: 'User already logged in.'});
+    res.render("signin", {message: '**You are already logged in**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
   } else {
       try {
           const userPassword = req.body.password;
+
           const foundUser = await User.findByEmail(req.body.signinEmail).then((docs) => {return docs}).catch((err) => {return err});
-
-
+          
           if (foundUser.length > 0) {
-              const currentUser = foundUser[0];
+            
+              const loginUser = foundUser[0];
+              const passwordsMatching = await comparePassword(userPassword, loginUser.userPassword).then((docs) => {return docs}).catch((err) => {return err});
 
-              const passwordsMatching = await comparePassword(userPassword, currentUser.userPassword).then((docs) => {return docs}).catch((err) => {return err});
               if (passwordsMatching) {
-                  req.session.userId = currentUser._id;
-
-                  console.log('User login operation success.');
-              };
+                req.session.userId = loginUser._id;
+                console.log('User login operation success.');
+                homeRender(res, req);
+              } else {
+                res.render("signin", {message: '**Incorrect password entered!**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+              }
           } else {
-              res.json({result: 'ERROR', message: 'Indicated username or/and password are not correct.'});
+              res.render("signin", {message: '**Incorrect email address entered!**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
           };
       } catch(e) {
           console.error(e);
-          res.json({result: 'ERROR', message: 'Request operation error.'});
+          res.render("signin", {message: '**Request operation error.**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
       };
-  res.redirect('/myposts');
   };
 });
 
@@ -260,13 +299,3 @@ server.listen(3000, function(err) {
 //HTTPS TRYING
 // const PORT = process.env.PORT || 4000;
 // https.createServer(options, app).listen(PORT, console.log(`server runs on port ${PORT}`));
-
-
-
-// db.products.insertOne({_id: 2, name: "tomer", price: 2, stock: 4.5, reviews: {
-//   authorName: "john",
-//   rating: 3, 
-//   review: "LOL"
-// }})
-
-// db.products.deleteOne({name: "tomer"})

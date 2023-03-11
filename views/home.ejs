@@ -1,21 +1,28 @@
 <%- include("partials/header")-%>
-
-  <h1 class="homeTitle">Sharing is caring</h1>
+  <div class="topHome"> 
+    <h1 class="homeTitle">Sharing is caring</h1>
   
-  <form class="d-flex searchPost" role="search" action="/search" method="post">
-    <input class="form-control me-2" type="search" placeholder="Search Post By Title" aria-label="Search" name="postTitle">
-    <button class="btn btn-outline-success" id="searchBtn" type="submit">Search</button>
-  </form>
+    <form class="d-flex searchPost" role="search" action="/search" method="post">
+      <input class="form-control me-2 inputBox" type="search" oninput="this.value = this.value.replace(/[^A-Za-z0-9!,]/, '')" placeholder="Search Post By Title" aria-label="Search" name="postTitle">
+      <button class="btn btn-outline-success" id="searchBtn" type="submit">Search</button>
+    </form><br>
+    <message class="errorSearch hidden" id="error"> <%= message %> </message>
+  </div>
 
   
   <div class="globalPosts">
-    <% listPosts.forEach(function(post) { %>
-      <h4 class="GlobalpostsTitle"><%= post.title %></h4>
-      <p class="GlobalpostsContent"><%= post.content.substring(0,100) %>...</p>
-      <a href='/posts/<%= post.id %>'>Read more</a>
-      <p class="globalTime"><%= String(post.createdAt).substring(0,24) %></p>
-    <% }); %>
+    <% for (let i = 0; i < listPosts.length; i++) { %>
+      <h4 class="GlobalpostsTitle"><%= listPosts[i].title%></h4>
+      <p class="ahutorName" style="text-decoration: none;">
+        Ahutor: <%= listAhutors[i] %>
+      </p><br><br>
+      <p class="GlobalpostsContent"><%= listPosts[i].content.substring(0,150) %>...</p>
+      <p class="globalTime"><a class='readmore' href='/posts/<%= listPosts[i].id %>' style="text-decoration: none;">Read more</a><%= String(listPosts[i].createdAt).substring(0,24) %></p>
+      <hr>
+    <% }; %>
   </div>
+
+  <div></div>
   
   
 <%- include("partials/footer")-%>

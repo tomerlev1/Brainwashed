@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 import validator  from "validator";
-import { hashPassword, comparePassword } from "./bcrypt.js";
+import { hashPassword} from "./bcrypt.js";
 
 var db_server  = process.env.DB_ENV || 'primary';
 
 mongoose.set("strictQuery", false);
 mongoose.connect("mongodb://127.0.0.1:27017/blogDB", {useNewUrlParser: true});
 
-const Schema = mongoose.Schema;
-const model = mongoose.model;
+export const Schema = mongoose.Schema;
+export const model = mongoose.model;
 
 const PostSchema = new Schema({
   userId: {
@@ -44,7 +44,7 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Please enter Full Name"],
   },
-  emailAdress: {
+  emailAddress: {
     type: String,
     trim: true,
     lowercase: true,
@@ -65,39 +65,47 @@ const UserSchema = new Schema({
   , { timestamps: true }
 );
 
+// static method that insert new user 
+UserSchema.static("insertUser",async function(Fname, email, password) {
+
+  try {
+    const hash = await hashPassword(password).then((result) => {return result}).catch((err) => {console.log('Error to hash the password')});
+
+    const user = new this({
+      fullName: Fname,
+      emailAddress: email,
+      userPassword: hash,
+    });
+
+    const message = await user.save().then(savedUser => {
+      savedUser === user;
+    })
+    return 'User successfully created';
+  } catch (error) {
+    return error.errors.emailAddress.properties.message;
+  };
+});
+
+
 // static method that find user by email 
 UserSchema.static("findByEmail",async function(email) {
 
-  const query = await this.find({emailAdress: {$eq: email}});
+  const query = await this.find({emailAddress: {$eq: email}});
   query instanceof this.Query;
   const emailFound = await query;
 
   return emailFound;
 });
 
-// static method that insert new user 
-UserSchema.static("insertUser",async function(Fname, email, password) {
-  const hash = await hashPassword(password).then((result) => {return result}).catch((err) => {console.log('Error to hash the password')});
-  console.log(hash);
+UserSchema.static("findById",async function(userId) {
 
-  const user = new this({
-    fullName: Fname,
-    emailAdress: email,
-    userPassword: hash,
-  });
+  const query = await this.find({_id: {$eq: userId}});
+  query instanceof this.Query;
+  const userFound = await query;
 
-  console.log(user);
-  await user.save(function(err,result){
-    if (err){
-        console.log(err);
-    }
-    else{
-        console.log(result)
-    }
+  return userFound;
 });
 
-  return console.log('New user was saved');
-});
 
 // static method that delete user by id 
 UserSchema.static("deleteById",async function(userId) {
@@ -150,10 +158,10 @@ PostSchema.static("findGlobals", async function() {
 
 PostSchema.static("findPostByTitle", async function(title) {
 
-  const query = await this.find({title: {$eq: title}, category: {$eq: 'global'}});
+  const query = await this.find({title: {$regex: title.toLowerCase(), $options: "i"}, category: {$eq: 'global'}});
   query instanceof this.Query;
   const postFound = await query;
-  console.log(postFound);
+
   return postFound;
 });
 

@@ -6,15 +6,16 @@
   <form class="createPost" action="/publish" method="post">
     <div class="container">
       <label id="t"><b>Title</b></label><br>
-      <input id="composeTitle" placeholder="Write your title here..." type="text" name="composeTitle" autocomplete="on" required><br>
+      <input id="composeTitle" placeholder="Write your title here..." type="text" name="composeTitle" autocomplete="on" oninput="this.value = this.value.replace(/[^A-Za-z0-9! ,-.]/, '')" required><br>
 
       <label id="p"><b>Content</b></label><br>
-      <textarea id="composeBody" placeholder="Write your post here..." rows="5" cols="60" name="composeBody" required></textarea><br>
+      <textarea id="composeBody" placeholder="Write your post here..." rows="5" cols="60" name="composeBody" oninput="this.value = this.value.replace(/[^A-Za-z0-9!,`.-: '']/, '')" required></textarea><br>
       <input type="radio" id="private" name="category[]" value="private">
       <label id="pr" for="private">Private post</label>
       <input type="radio" id="global" name="category[]" value="global" required>
       <label id="gl" for="global">Global post</label><br>
-      <button type="submit" class="btn btn-light" name="publish" value="Publish">Publish</button>
+      <message class="errorCompose hidden" id="error"> <%= message %> </message>
+      <button type="submit" class="btn btn-light composeBtn" name="publish" value="Publish">Publish</button>
     </div>
   
   </form>
