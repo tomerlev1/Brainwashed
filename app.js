@@ -9,6 +9,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { User, Post } from "./javascript/schemas.js";
 import {comparePassword } from "./javascript/bcrypt.js";
+import https from "https";
+import fs from "fs";
 
 
 
@@ -283,19 +285,19 @@ app.post('/signin', async function(req, res) {
 
 
 
-server.listen(3000, function(err) {
-  if(err) {
-    console.log(err);
-  } else {
-    console.log('server runs on port 3000');
-  }
-});
+// server.listen(3000, function(err) {
+//   if(err) {
+//     console.log(err);
+//   } else {
+//     console.log('server runs on port 3000');
+//   }
+// });
 
 
-// const options = {
-//   key: fs.readFileSync('key.pem'),
-//   cert: fs.readFileSync('cert.pem')
-// };
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
 //HTTPS TRYING
-// const PORT = process.env.PORT || 4000;
-// https.createServer(options, app).listen(PORT, console.log(`server runs on port ${PORT}`));
+const PORT = process.env.PORT || 4000;
+https.createServer(options, app).listen(PORT, console.log(`server runs on port ${PORT}`));
