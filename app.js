@@ -52,6 +52,7 @@ async function homeRender(res, req, error = null) {
   };
 };
 
+// Getting the current loggedin user
 async function currentUser(req) {
   const curUser = await User.findById(req.session.userId, function (err, docs) {
     if (err){
@@ -64,13 +65,13 @@ async function currentUser(req) {
   return curUser[0]
 };
 
-async function userPosts(req) {
+// async function userPosts(req) {
 
-  const userId = req.session.userId;
-  const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
+//   const userId = req.session.userId;
+//   const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
 
-  return userPosts;
-}
+//   return userPosts;
+// }
 
 app.set('view engine', 'ejs');
 
@@ -133,7 +134,7 @@ app.get("/signin", async function(req, res) {
   res.render("signin", {message: null, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
 });
 
-// Open the full post in his specific url
+// Opening the full post in his specific URL
 app.get("/posts/:postId", async function(req, res) {
 
   const requestedPost = await Post.findPostById(req.params.postId).then((docs) => {return docs[0]}).catch((err) => {return err});
@@ -160,6 +161,7 @@ app.get("/posts/:postId", async function(req, res) {
 
 // });
 
+// making logout
 app.get('/logout', function (req, res) {
   if (req.session.userId) {
       delete req.session.userId;
@@ -169,6 +171,7 @@ app.get('/logout', function (req, res) {
   }
 });
 
+// redirect all incorrect entered URLs
 app.get('*', (req, res) => {
   res.redirect('/')
 })
@@ -208,6 +211,7 @@ app.post("/compose", function(req, res) {
   res.redirect("compose");
 });
 
+// Searching a post 
 app.post("/search", async function(req, res) {
   try {
       const requestedTitle = await Post.findPostByTitle(req.body.postTitle).then((docs) => {return docs}).catch((err) => {return err});
@@ -289,6 +293,7 @@ app.post('/signin', async function(req, res) {
   };
 });
 
+// Deleting post
 app.post('/delete', async function(req, res) {
     
     const curUser = req.session.userId;
@@ -300,7 +305,7 @@ app.post('/delete', async function(req, res) {
       
       if (returnValue.deletedCount === 0) {
         const userPosts = await Post.findUserPosts(curUser).then((docs) => {return docs}).catch((err) => {return err});
-        
+
         res.render("myposts", {message: '**An incorrect title was inputted**', listPosts: userPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
       } else {
 

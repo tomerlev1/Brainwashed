@@ -11,7 +11,7 @@
       <div class="modal-body p-5 pt-0" id="signupBody">
         <form class="signUpform" action="/signup" method="post">
           <div class="form-floating mb-3">
-            <input type="fname" class="form-control rounded-3" id="floatingInput" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/, '')" placeholder="Full name" name="fullName" required>
+            <input type="fname" class="form-control rounded-3" id="floatingInput" oninput="this.value = this.value.replace(/[^A-Za-z0-9,\s\r]/, '')" placeholder="Full name" name="fullName" required>
             <label for="floatingInput">Full name</label>
           </div>
           <div class="form-floating mb-3">
