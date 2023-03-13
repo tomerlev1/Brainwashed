@@ -3,7 +3,7 @@
     <h1 class="homeTitle">Sharing is caring</h1>
   
     <form class="d-flex searchPost" role="search" action="/search" method="post">
-      <input class="form-control me-2 inputBox" type="search" oninput="this.value = this.value.replace(/[^A-Za-z0-9!,]/, '')" placeholder="Search Post By Title" aria-label="Search" name="postTitle">
+      <input class="form-control me-2 inputBox" type="search" oninput="this.value = this.value.replace(/[^A-Za-z0-9!,' ']/, '')" placeholder="Search Post By Title" aria-label="Search" name="postTitle">
       <button class="btn btn-outline-success" id="searchBtn" type="submit">Search</button>
     </form><br>
     <message class="errorSearch hidden" id="error"> <%= message %> </message>

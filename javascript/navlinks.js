@@ -44,8 +44,6 @@ try {
     location.href = '/logout';
   });
 
-  console.log(logged);
-
   if (logged.innerText) {
      showNavs(hiddenNavs);
      hideNavs(nonHiddenNavs);

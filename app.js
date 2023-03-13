@@ -9,8 +9,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { User, Post } from "./javascript/schemas.js";
 import {comparePassword } from "./javascript/bcrypt.js";
-import https from "https";
-import fs from "fs";
+// import https from "https";
+// import fs from "fs";
 
 
 
@@ -18,8 +18,6 @@ const app = express();
 const server = http.createServer(app);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-
-// Global variables
 
 
 // Global contents
@@ -66,6 +64,14 @@ async function currentUser(req) {
   return curUser[0]
 };
 
+async function userPosts(req) {
+
+  const userId = req.session.userId;
+  const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
+
+  return userPosts;
+}
+
 app.set('view engine', 'ejs');
 
 app.use(
@@ -99,12 +105,12 @@ app.get("/myposts", async function(req, res) {
   try 
   {
     const userPosts = await Post.findUserPosts(userId).then((docs) => {return docs}).catch((err) => {return err});
-    res.render("myposts", {listPosts: userPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+    res.render("myposts", {message: null, listPosts: userPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
   } 
   catch(e) 
   {
     console.log(e);
-  }
+  };
 });
 
 app.get("/about", async function(req, res) {
@@ -176,19 +182,26 @@ app.post("/publish", async function(req, res) {
     content: req.body.composeBody,
     category: req.body.category[0],
   };
+  const foundTitle = await Post.findUserPosts(req.session.userId).then((docs) => {return docs}).catch((err) => {return err});
+  try {
+    const foundMatch = await foundTitle.find(element => element.title === req.body.composeTitle.toLowerCase());
 
-
-  if (userPost.userId) {
-    try {
-      await Post.insertPost(userPost).then((docs) => {return docs}).catch((err) => {return err})
-    } catch(e) {
-      console.log(e);
+    if (foundMatch != undefined) {
+      res.render('compose', {message: '**This title already exsits, please choose another one**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+    }
+    else if(userPost.userId) {
+      try {
+        await Post.insertPost(userPost).then((docs) => {return docs}).catch((err) => {return err})
+        res.redirect("/myposts");
+      } catch(e) {
+        console.log(e);
+      };
+    } else {
+      res.render('compose', {message: '**User must log in to post**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
     };
-  } else {
-    res.render('compose', {message: '**User must log in to post**', user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+  } catch(error) {
+    console.log(error);
   };
-
-  res.redirect("/myposts");
 });
 
 app.post("/compose", function(req, res) {
@@ -209,7 +222,7 @@ app.post("/search", async function(req, res) {
               return(docs);
           }
         });
-        console.log(postAhutor);
+
         searchAhutors.push(postAhutor[0].fullName);
       };
       if (requestedTitle.length >= 1) {
@@ -226,8 +239,8 @@ app.post("/search", async function(req, res) {
 app.post("/signup", async function(req, res) {
 
   // Finding if email exist in users DB
-  const foundEmail = await User.findByEmail(req.body.signupEmail).then((docs) => {return docs}).catch((err) => {return err});
-  console.log(foundEmail);
+    const foundEmail = await User.findByEmail(req.body.signupEmail).then((docs) => {return docs}).catch((err) => {return err});
+    console.log(foundEmail);
   // Checking if email already exist
   if (String(foundEmail) === String([])) {
     try {
@@ -276,6 +289,30 @@ app.post('/signin', async function(req, res) {
   };
 });
 
+app.post('/delete', async function(req, res) {
+    
+    const curUser = req.session.userId;
+    const postTitle = req.body.postTitle;
+
+    try {
+      const returnValue = await Post.deletePostByTitle(curUser, postTitle).then((result) => {return result}).catch((err) => {return err});
+      console.log(returnValue);
+      
+      if (returnValue.deletedCount === 0) {
+        const userPosts = await Post.findUserPosts(curUser).then((docs) => {return docs}).catch((err) => {return err});
+        
+        res.render("myposts", {message: '**An incorrect title was inputted**', listPosts: userPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+      } else {
+
+        const newListPosts = await Post.findUserPosts(curUser).then((docs) => {return docs}).catch((err) => {return err});
+
+        res.render("myposts", {message: null, listPosts: newListPosts, user: await currentUser(req).then(result => {return result;}).catch(err => {return err;})});
+      }
+    } catch(e) {
+      console.log(e);
+    };
+    
+});
 
 
 
@@ -284,20 +321,19 @@ app.post('/signin', async function(req, res) {
 
 
 
+server.listen(3000, function(err) {
+  if(err) {
+    console.log(err);
+  } else {
+    console.log('server runs on port 3000');
+  }
+});
 
-// server.listen(3000, function(err) {
-//   if(err) {
-//     console.log(err);
-//   } else {
-//     console.log('server runs on port 3000');
-//   }
-// });
 
-
-const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
-};
-//HTTPS TRYING
-const PORT = process.env.PORT || 4000;
-https.createServer(options, app).listen(PORT, console.log(`server runs on port ${PORT}`));
+// const options = {
+//   key: fs.readFileSync('key.pem'),
+//   cert: fs.readFileSync('cert.pem')
+// };
+// //HTTPS TRYING
+// const PORT = process.env.PORT || 4000;
+// https.createServer(options, app).listen(PORT, console.log(`server runs on port ${PORT}`));

@@ -29,8 +29,8 @@ try {
       const title = divOpenModal[i].childNodes[1].innerText;
       const content = divOpenModal[i].childNodes[3].innerText;
     
-      windowTitle.innerText = title;
-      windowConent.innerText = content.substring(0,1000) + '...';
+      windowTitle.innerHTML = title;
+      windowConent.innerText = content.substring(0,900) + '...';
     });
   };
 

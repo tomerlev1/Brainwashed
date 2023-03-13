@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import validator  from "validator";
 import { hashPassword} from "./bcrypt.js";
+import {ObjectId} from "mongodb";
 
 var db_server  = process.env.DB_ENV || 'primary';
 
@@ -174,16 +175,11 @@ PostSchema.static("findPostById", async function(id) {
   return postFound;
 });
 
-// userSchema.static("deletePostByTitle",async function(userId, title) {
-//   await this.findOne({_id: {$eq: userId}}, function(err, result) {
-//     if (err){
-//       console.log(err);
-//   }
-//   else{
-//       console.log(result)
-//   }
-//   });
-// });
+PostSchema.static("deletePostByTitle", async function(userId, title) {
+  const user_Id = ObjectId(userId);
+
+  return await this.deleteOne({userId: {$eq: user_Id}, title: {$eq: title}});
+});
 
 
 export const User = model("User", UserSchema);

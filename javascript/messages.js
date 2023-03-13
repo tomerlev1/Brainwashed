@@ -1,7 +1,7 @@
 'use strict';
 
 const showMessage = function (tag) {
-  console.log(tag);
+
   tag.classList.remove('hidden');
 };
 
@@ -41,6 +41,15 @@ try {
   const Publish = document.querySelector('.errorCompose');
   if (Publish.innerText != null) {
     showMessage(Publish);
+  };
+} catch (e) {
+  console.log(e);
+};
+
+try {
+  const Deleting = document.querySelector('.errorDelete');
+  if (Deleting.innerText != null) {
+    showMessage(Deleting);
   };
 } catch (e) {
   console.log(e);

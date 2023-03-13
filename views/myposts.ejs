@@ -2,9 +2,15 @@
 
   <h1 class="MypostsTitle">My Posts</h1>
 
+  <form class="d-flex deletePost" role="delete" action="/delete" method="post">
+    <input class="form-control me-2 inputBox" type="delete" oninput="this.value = this.value.replace(/[^A-Za-z0-9!,\s\r]/g, '')" placeholder="Delete Post By Title" aria-label="Delete" name="postTitle">
+    <button class="btn btn-outline-success" id="deleteBtn" type="submit">Delete</button>
+  </form><br><br>
+  <message class="errorDelete hidden" id="error"> <%= message %> </message><br>
+
   <form class="newCompose" action="/compose" method="post">
     <div class="container right">
-      <button type="submit" class="btn btn-circle btn-xl">+</button>
+      <button type="submit" class="btn btn-circle btn-md">New post</button>
     </div>
   </form>
 
@@ -16,15 +22,15 @@
           <p class="boxContent hidden"><%= post.content %></p>
           <time class="boxDate"><%= String(post.createdAt).substring(0,24) %></time>
         </div>
-      <% }); %>
+        <% }); %>
         <div class="openWindow hidden">
           <button class="close-modal">&times;</button>
-            <h4 class="windowTitle"></h4>
-            <p class="windowConent"></p>
+          <h4 class="windowTitle"></h4>
+          <p class="windowConent"></p>
         </div>
         <div class="overlay hidden"></div>
+      </div>
     </div>
-  </div>
 
 
 <%- include("partials/footer") -%>

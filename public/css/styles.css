@@ -291,6 +291,12 @@ h1 {
 .openWindow h4 {
     text-align: center;
 }
+
+.deleteButton {
+    margin-left: 40%;
+    margin-top: 1em;
+    margin-bottom: 0;
+}
   
 .overlay {
     position: absolute;
@@ -322,7 +328,7 @@ h1 {
     border-radius: 0.5em;
     opacity: 0.98;
     overflow: hidden;
-    margin: 2rem 1.5rem 0 0;
+    margin: 0.5rem 1.5rem 0 0;
     background-color: #d8d3d3;
     color: rgb(31, 30, 30);
     cursor: pointer;
@@ -371,17 +377,17 @@ h1 {
 }
 
 /* Add post btn///////////////////////// */
-.btn-circle.btn-xl {
+.btn-circle.btn-md {
     background-color:  rgb(54, 50, 50);
     color: white;
-    width: 55px;
-    height: 55px;
+    width: 100px;
+    height: 37px;
     margin: 0 auto;
     padding: 0;
     border-radius: 1em;
-    border-width: 0.07em;
+    border-width: 0.1em;
     border-color: white;
-    font-size: 35px;
+    font-size: 16px;
     line-height: 0px;
     box-shadow: inset 0 0 0 0 rgb(83, 82, 82);
     transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
@@ -391,7 +397,11 @@ h1 {
     float: right;
 }
 
-.btn-circle.btn-xl:hover {
+.deletePost {
+    float: left;
+}
+
+.btn-circle.btn-md:hover {
     border-color: #0a0a0a;
     color: black;
     background-color: rgb(255, 255, 255);
@@ -400,7 +410,7 @@ h1 {
 
 /* sreach bar and btn */
 
-#searchBtn {
+#searchBtn, #deleteBtn {
     background-color: rgb(54, 50, 50);
     border-radius: 1em;
     border-width: 0.1em;
@@ -410,7 +420,7 @@ h1 {
     transition: color .8s ease-in-out, box-shadow .8s ease-in-out;
 }
 
-#searchBtn:hover {
+#searchBtn:hover, #deleteBtn:hover {
     color: black;
     border-color: black;
     background-color: rgb(117, 115, 115);
