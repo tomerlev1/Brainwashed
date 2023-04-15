@@ -1,4 +1,4 @@
-# BlogProject By Me :D 
+#"Brainwashed" - a blog project by me :D 
 
 In this project I used several technologies that I taught myself such as: 
 * Mongoose&MongoDB for the Database, 
