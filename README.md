@@ -2,7 +2,7 @@
 
 In this project I used several technologies that I taught myself such as: 
 * Mongoose&MongoDB for the Database, 
-* NodeJS for the server 
+* NodeJS&ExpressJS for the server 
 * and JS, EJS, HTML5, CSS3 for the frontend of my blog.
 
 I learnd a lot from this project about ways to protect a site from hacking and code injections
