@@ -171,7 +171,7 @@ PostSchema.static("findPostById", async function(id) {
   const query = await this.find({_id: {$eq: id}, category: {$eq: 'global'}});
   query instanceof this.Query;
   const postFound = await query;
-  console.log(postFound);
+
   return postFound;
 });
 

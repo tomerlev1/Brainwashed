@@ -11,10 +11,10 @@
 
   
   <div class="globalPosts">
-    <% for (let i = 0; i < listPosts.length; i++) { %>
+    <% for (let i = listPosts.length - 1; 0 <= i; i--) { %>
       <h4 class="GlobalpostsTitle"><%= listPosts[i].title%></h4>
       <p class="ahutorName" style="text-decoration: none;">
-        Ahutor: <%= listAhutors[i] %>
+        Author: <%= listAhutors[i] %>
       </p><br><br>
       <p class="GlobalpostsContent"><%= listPosts[i].content.substring(0,150) %>...</p>
       <p class="globalTime"><a class='readmore' href='/posts/<%= listPosts[i].id %>' style="text-decoration: none;">Read more</a><%= String(listPosts[i].createdAt).substring(0,24) %></p>
